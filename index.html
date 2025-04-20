@@ -11,14 +11,21 @@
       margin: 0;
       padding: 0;
     }
-    #map { height: 100vh; }
+    /* Adjust the map size */
+    #map { 
+      height: calc(100vh - 50px); /* Map takes most of the screen, leaving space for the button */
+    }
+
+    /* Style for the route */
     .route {
       color: blue;
       weight: 5;
       opacity: 0.7;
     }
+
+    /* Button style */
     button {
-      position: absolute;
+      position: fixed;
       top: 10px;
       left: 10px;
       padding: 10px;
@@ -26,17 +33,22 @@
       color: white;
       border: none;
       cursor: pointer;
+      z-index: 1000; /* Ensure button is above map */
     }
+
     button:hover {
       background-color: #45a049;
     }
+
+    /* Message style */
     #message {
-      position: absolute;
+      position: fixed;
       top: 50px;
       left: 10px;
       padding: 10px;
       background-color: rgba(0, 0, 0, 0.5);
       color: white;
+      z-index: 1000; /* Ensure message is above map */
     }
   </style>
 </head>
