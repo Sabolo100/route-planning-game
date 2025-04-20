@@ -55,12 +55,31 @@
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    // Define start and end markers (for Budapest District 1 example)
+    // Define start and end markers with labels
     const startPoint = L.marker([47.4979, 19.0402]).addTo(map); // Near Buda Castle
     startPoint.bindPopup("Start Point").openPopup();
 
     const endPoint = L.marker([47.5025, 19.0427]).addTo(map); // Near Fisherman's Bastion
     endPoint.bindPopup("End Point").openPopup();
+
+    // Function to add labels for start and end points
+    const startLabel = L.divIcon({
+      className: 'start-label',
+      html: '<div style="background-color: white; padding: 5px; border-radius: 5px; font-size: 14px;">Start Point</div>',
+      iconSize: [100, 30],
+      iconAnchor: [50, 15]
+    });
+
+    const endLabel = L.divIcon({
+      className: 'end-label',
+      html: '<div style="background-color: white; padding: 5px; border-radius: 5px; font-size: 14px;">End Point</div>',
+      iconSize: [100, 30],
+      iconAnchor: [50, 15]
+    });
+
+    // Add labels to the map
+    L.marker([47.4979, 19.0402], { icon: startLabel }).addTo(map);
+    L.marker([47.5025, 19.0427], { icon: endLabel }).addTo(map);
 
     // Route polyline for user to draw
     let route = L.polyline([], { className: 'route' }).addTo(map);
