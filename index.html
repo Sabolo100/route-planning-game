@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Route Planning Game</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    #map { height: 100vh; }
+    .route {
+      color: blue;
+      weight: 5;
+      opacity: 0.7;
+    }
+    button {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    #message {
+      position: absolute;
+      top: 50px;
+      left: 10px;
+      padding: 10px;
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <button onclick="validateRoute()">Validate Route</button>
+  <div id="message"></div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    // Initialize the map
+    const map = L.map('map').setView([47.4979, 19.0402], 13); // Budapest coordinates
+
+    // Add OpenStreetMap tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Route polyline for user to draw
+    let route = L.polyline([], { className: 'route' }).addTo(map);
+
+    // Enable user to draw by clicking on the map
+    map.on('click', function(e) {
+      route.addLatLng(e.latlng);
+    });
+
+    // Validate the route using OSRM API
+    function validateRoute() {
+      const latlngs = route.getLatLngs().map(latlng => [latlng.lat, latlng.lng]);
+      const url = `https://router.project-osrm.org/route/v1/driving/${latlngs.join(';')}?overview=false`;
+
+      // Reset message
+      document.getElementById('message').innerText = '';
+
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          if (data.routes && data.routes.length > 0) {
+            document.getElementById('message').innerText = 'Valid route!';
+          } else {
+            document.getElementById('message').innerText = 'Invalid route!';
+          }
+        })
+        .catch(error => {
+          console.error('Error validating route:', error);
+          document.getElementById('message').innerText = 'Error in route validation.';
+        });
+    }
+  </script>
+</body>
+</html>
